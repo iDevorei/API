@@ -1,0 +1,655 @@
+{
+	"info": {
+		"_postman_id": "f4d43b7e-6bc4-46bc-81a5-26470ec5fe6f",
+		"name": "Employee API Collection(v2)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31543627"
+	},
+	"item": [
+		{
+			"name": "Authorization Employee 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"// проверяем наличие токена\r",
+							"pm.test(\"Check access token\", function () {\r",
+							"    pm.expect(jsonData.access_token).to.exist;\r",
+							"});\r",
+							"\r",
+							"// кидаем токен в окружение (environments)\r",
+							"pm.environment.set(\"access_token_one\", jsonData.access_token);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "yura.torbunov+test1@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/auth/access_token",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"auth",
+						"access_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authorization Employee 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"// проверяем наличие токена\r",
+							"pm.test(\"Check access token\", function () {\r",
+							"    pm.expect(jsonData.access_token).to.exist;\r",
+							"});\r",
+							"\r",
+							"// кидаем токен в окружение (environments)\r",
+							"pm.environment.set(\"access_token_two\", jsonData.access_token);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "yura.torbunov+test2@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/auth/access_token",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"auth",
+						"access_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create task for Employee 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Task ID exists\", function () {\r",
+							"    pm.expect(jsonData.data.id).to.exist;\r",
+							"});\r",
+							"\r",
+							"// id задачи\r",
+							"pm.environment.set(\"taskId\", jsonData.data.id);\r",
+							"\r",
+							"// название задачи\r",
+							"pm.test(\"Task name is correct\", function () {\r",
+							"    pm.expect(jsonData.data.name).to.eql(\"Find Darth Traya\");\r",
+							"});\r",
+							"\r",
+							"// ответственный по задаче\r",
+							"pm.test(\"Responsible person is correct\", function () {\r",
+							"    pm.expect(jsonData.data.responsible.id).to.eql(\"1000005\");\r",
+							"});\r",
+							"\r",
+							"// статус задачи\r",
+							"pm.test(\"Status of the task is correct\", function () {\r",
+							"    pm.expect(jsonData.data.status).to.eql(\"assigned\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_one}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contentType\": \"Task\",\r\n    \"name\": \"Find Darth Traya\",\r\n    \"deadline\": null,\r\n    \"parent\": null,\r\n    \"isUrgent\": false,\r\n    \"isTemplate\": false,\r\n    \"owner\": {\r\n        \"id\": \"1000004\",\r\n        \"contentType\": \"Employee\"\r\n    },\r\n    \"responsible\": {\r\n        \"id\": \"1000005\",\r\n        \"contentType\": \"Employee\"\r\n    },\r\n    \"contractor\": null,\r\n    \"attaches\": [],\r\n    \"Category130CustomFieldPrioritet\": \"П3 Низкий\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task's description (Employee 1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// проверяем, что есть описание задачи\r",
+							"pm.test(\"Task statement is not empty\", function () {\r",
+							"\r",
+							"    let fields = [\"statement\", \"textStatement\"];\r",
+							"\r",
+							"        fields.forEach(field => {\r",
+							"            pm.test(`field \"${field}\" is not empty`, () => {\r",
+							"                pm.expect(jsonData.data[field]).to.not.be.empty;\r",
+							"        });\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_one}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{access_token_one}}\",\r\n    \"contentType\": \"Task\",\r\n    \"attaches\": [],\r\n    \"statement\": \"<p>Find her! Quickly!</p>\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task/{{taskId}}",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task",
+						"{{taskId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Take a task (Employee 2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// статус задачи\r",
+							"pm.test(\"Task status is 'accepted'\", function () {\r",
+							"    pm.expect(pm.response.json().data.status).to.eql(\"accepted\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_two}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"action\": \"act_accept_task\",\r\n    \"checkTodos\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task/{{taskId}}/doAction",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task",
+						"{{taskId}}",
+						"doAction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finish a task (Employee 2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// статус задачи\r",
+							"pm.test(\"Task status is 'done'\", function () {\r",
+							"    pm.expect(jsonData.data.status).to.eql(\"done\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_two}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"action\": \"act_done\",\r\n    \"checkTodos\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task/{{taskId}}/doAction",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task",
+						"{{taskId}}",
+						"doAction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment in task (Employee 2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// проверяем, что есть коммент задачи\r",
+							"pm.test(\"Task statement is not empty\", function () {\r",
+							"    pm.expect(jsonData.data.content).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_two}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contentType\": \"CommentCreateActionRequest\",\r\n    \"comment\": {\r\n        \"contentType\": \"Comment\",\r\n        \"content\": \"<p>I find her! She is scary!</p>\",\r\n        \"attaches\": [],\r\n        \"workTime\": null,\r\n        \"completed\": 0,\r\n        \"owner\": {\r\n            \"id\": \"1000005\",\r\n            \"contentType\": \"Employee\"\r\n        },\r\n        \"subject\": {\r\n            \"id\": \"1000007\",\r\n            \"contentType\": \"Task\"\r\n        }\r\n    },\r\n    \"transports\": [\r\n        {}\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task/{{taskId}}/comments",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task",
+						"{{taskId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accept a task (Employee 1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// статус задачи\r",
+							"pm.test(\"Task status is completed\", function () {\r",
+							"    pm.expect(jsonData.data.status).to.eql(\"completed\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_one}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"action\": \"act_accept_work\",\r\n    \"checkTodos\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task/{{taskId}}/doAction",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task",
+						"{{taskId}}",
+						"doAction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a task (Employee 1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// наличие текста в ответе\r",
+							"pm.test(\"Task name is correct\", function () {\r",
+							"    pm.expect(jsonData.data).to.eql(\"Task successfully removed\");\r",
+							"});\r",
+							"\r",
+							"// проверяем целостность тела ответа\r",
+							"pm.test(\"Body is correct\", function () {\r",
+							"    pm.response.to.have.body({\r",
+							"    \"meta\": {\r",
+							"        \"status\": 200,\r",
+							"        \"errors\": []\r",
+							"    },\r",
+							"    \"data\": \"Task successfully removed\"\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_one}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task/{{taskId}}",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task",
+						"{{taskId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a task (Employee 1) Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"// проверяем что нет задачи с заданным id\r",
+							"pm.test(\"Error message is correct\", function () {\r",
+							"    pm.expect(jsonData.meta.errors[0].message).to.eql(\"Not Found Task with id = \" + pm.environment.get(\"taskId\") + \"\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token_one}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://m74965812.megaplan.ru/api/v3/task/{{taskId}}",
+					"protocol": "https",
+					"host": [
+						"m74965812",
+						"megaplan",
+						"ru"
+					],
+					"path": [
+						"api",
+						"v3",
+						"task",
+						"{{taskId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
